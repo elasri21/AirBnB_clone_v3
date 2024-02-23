@@ -15,3 +15,19 @@ def status():
     response = jsonify(data)
     response.status_code = 200
     return response
+
+
+@app_views.route("/stats", methods=['GET'], strict_slashes=False)
+def stats():
+    """endpoint that retrieves the number of each objects by type"""
+    data = {
+        "amenities": storage.count("Amenity"),
+        "cities": storage.count("City"),
+        "places": storage.count("Place"),
+        "reviews": storage.count("Review"),
+        "states": storage.count("State"),
+        "users": storage.count("User"),
+    }
+    response = jsonify(data)
+    response.status_code = 200
+    return response
