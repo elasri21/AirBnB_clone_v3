@@ -59,7 +59,8 @@ def state_put(state_id):
     return jsonify(obj.to_dict())
 
 
-@app_views.route("/states/<state_id>", methods=["DELETE"], strict_slashes=False)
+@app_views.route("/states/<state_id>", methods=["DELETE"],
+                 strict_slashes=False)
 def state_delete_by_id(state_id):
     """Delete a state with a specific if
     Args:
