@@ -17,5 +17,16 @@ def teardown(exception):
     storage.close()
 
 
+@app.errorhandler(404)
+def handle_404(exception):
+    """Handle not found pages"""
+    data = {
+                "error": "Not found"
+           }
+    response = jsonify(data)
+    response.status_code = 404
+    return response
+
+
 if __name__ == "__main__":
     app.run(getenv("HBNB_API_HOST"), getenv("HBNB_API_PORT"))
