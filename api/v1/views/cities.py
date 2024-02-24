@@ -1,33 +1,29 @@
 #!/usr/bin/python3
-"""new view forCity objects that handles all default RESTFul API actions"""
+"""Script that handls City objects"""
 from flask import jsonify, abort, request
 from api.v1.views import app_views, storage
-from models import storage
-from models.state import State
 from models.city import City
 
 
 @app_views.route("/states/<state_id>/cities", methods=["GET"],
                  strict_slashes=False)
-@app_views.route("/states/<state_id>/cities/", methods=["GET"],
-                 strict_slashes=False)
 def city_by_state(state_id):
-    """Retrieves the list of all City objects"""
+    """retrieves all City objects from a specific state
+    Args:
+        state_id: state id"""
     list_of_cities = []
-    objects = storage.get("State", state_id)
-    if objects is None:
+    objs = storage.get("State", str(state_id))
+    if objs is None:
         abort(404)
-    for obj in objects.cities:
+    for obj in objs.cities:
         list_of_cities.append(obj.to_dict())
     return jsonify(list_of_cities)
 
 
 @app_views.route("/states/<state_id>/cities", methods=["POST"],
                  strict_slashes=False)
-@app_views.route("/states/<state_id>/cities/", methods=["POST"],
-                 strict_slashes=False)
 def city_create(state_id):
-    """Creates a City: POST /api/v1/cities
+    """create city route
     Args:
         state_id: state id"""
     json_cts = request.get_json(silent=True)
@@ -38,51 +34,52 @@ def city_create(state_id):
     if "name" not in json_cts:
         abort(400, 'Missing name')
     json_cts["state_id"] = state_id
-    new_c = City(**json_cts)
-    new_c.save()
-    response = jsonify(new_c.to_dict())
+    new_city = City(**json_cts)
+    new_city.save()
+    response = jsonify(new_city.to_dict())
     response.status_code = 201
     return response
 
 
-@app_views.route("/citiess/<city_id>",  methods=["GET"], strict_slashes=False)
+@app_views.route("/cities/<city_id>",  methods=["GET"],
+                 strict_slashes=False)
 def city_by_id(city_id):
-    """get a city with aspecific id
+    """gets a specific City object by ID
     Args:
-        city_id: city id"""
-    obj = storage.get("City", str(city_id))
-    if obj is None:
+        city_id: city object id"""
+    objs = storage.get("City", str(city_id))
+    if objs is None:
         abort(404)
-    return jsonify(obj.to_dict())
+    return jsonify(objs.to_dict())
 
 
-@app_views.route("/cities/<city_id>",  methods=["PUT"], strict_slashes=False)
+@app_views.route("cities/<city_id>",  methods=["PUT"], strict_slashes=False)
 def city_put(city_id):
-    """update a city with the id passed
+    """updates specific City object by ID
     Args:
-        city_id: city id"""
-    cts_json = request.get_json(silent=True)
-    if cts_json is None:
-        abort(400, "Not a JSON")
-    obj = storage.get("City", str(city_id))
-    if obj is None:
+        city_id: city object ID"""
+    json_cts = request.get_json(silent=True)
+    if json_cts is None:
+        abort(400, 'Not a JSON')
+    objs = storage.get("City", str(city_id))
+    if objs is None:
         abort(404)
-    for k, v in cts_json.items():
-        if k not in ["id", "create_at", "update_at", "state_id"]:
-            setattr(obj, k, v)
-    obj.save()
-    return jsonify(obj.to_dict())
+    for key, val in json_cts.items():
+        if key not in ["id", "created_at", "updated_at", "state_id"]:
+            setattr(objs, key, val)
+    objs.save()
+    return jsonify(objs.to_dict())
 
 
-@app_views.route("/cities/<city_id>", methods=["DELETE"],
+@app_views.route("/cities/<city_id>",  methods=["DELETE"],
                  strict_slashes=False)
 def city_delete_by_id(city_id):
-    """Delete a city with a specific if
+    """deletes City by id
     Args:
-        city_id: city id"""
-    obj = storage.get("City", str(city_id))
-    if obj is None:
+        city_id: city object id"""
+    objs = storage.get("City", str(city_id))
+    if objs is None:
         abort(404)
-    storage.delete(obj)
+    storage.delete(objs)
     storage.save()
     return jsonify({})
