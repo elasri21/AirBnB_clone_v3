@@ -10,7 +10,7 @@ def amenity_get_all():
     """retrieves all Amenity objects"""
     list_ems = []
     objs = storage.all("Amenity")
-    for obj in am_obj.values():
+    for obj in objs.values():
         list_ems.append(obj.to_dict())
     return jsonify(list_ems)
 
@@ -19,7 +19,7 @@ def amenity_get_all():
 def amenity_create():
     """create amenity route"""
     json_ems = request.get_json(silent=True)
-    if jsonems is None:
+    if json_ems is None:
         abort(400, 'Not a JSON')
     if "name" not in json_ems:
         abort(400, 'Missing name')
