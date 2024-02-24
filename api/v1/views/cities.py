@@ -63,7 +63,7 @@ def city_put(city_id):
     if obj is None:
         abort(404)
     for k, v in cts_json.items():
-        if k not in ["id", "create_at", "update_at"]:
+        if k not in ["id", "create_at", "update_at", "state_id"]:
             setattr(obj, k, v)
     obj.save()
     return jsonify(obj.to_dict())
