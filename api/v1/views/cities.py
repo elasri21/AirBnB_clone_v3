@@ -2,6 +2,7 @@
 """new view forCity objects that handles all default RESTFul API actions"""
 from flask import jsonify, abort, request
 from api.v1.views import app_views, storage
+from models import storage
 from models.state import State
 from models.city import City
 
@@ -70,7 +71,7 @@ def city_put(city_id):
         if k not in ["id", "create_at", "update_at", "state_id"]:
             setattr(obj, k, v)
     obj.save()
-    return jsonify(obj.to_dict())
+    return jsonify(obj.to_dict()), 200
 
 
 @app_views.route("/cities/<city_id>", methods=["DELETE"],
