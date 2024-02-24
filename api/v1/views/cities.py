@@ -21,24 +21,28 @@ def city_by_state(state_id):
         list_of_cities.append(obj.to_dict())
     return jsonify(list_of_cities)
 
-@app_views.route('/states/<state_id>/cities', methods=['POST'])
-@app_views.route('/states/<state_id>/cities/', methods=['POST'])
-def create_city(state_id):
-    '''Creates a City'''
-    if not request.get_json():
+
+@app_views.route("/states/<state_id>/cities", methods=["POST"],
+                 strict_slashes=False)
+@app_views.route("/states/<state_id>/cities/", methods=["POST"],
+                 strict_slashes=False)
+def city_create(state_id):
+    """Creates a City: POST /api/v1/cities
+    Args:
+        state_id: state id"""
+    json_cts = request.get_json(silent=True)
+    if json_cts is None:
         abort(400, 'Not a JSON')
-    if 'name' not in request.get_json():
-        abort(400, 'Missing name')
-    all_states = storage.all("State").values()
-    state_obj = [obj.to_dict() for obj in all_states if obj.id == state_id]
-    if state_obj == []:
+    if not storage.get("State", str(state_id)):
         abort(404)
-    cities = []
-    new_city = City(name=request.json['name'], state_id=state_id)
-    storage.new(new_city)
-    storage.save()
-    cities.append(new_city.to_dict())
-    return jsonify(cities[0]), 201
+    if "name" not in json_cts:
+        abort(400, 'Missing name')
+    json_cts["state_id"] = state_id
+    new_c = City(**json_cts)
+    new_c.save()
+    response = jsonify(new_c.to_dict())
+    response.status_code = 201
+    return response
 
 
 @app_views.route("/citiess/<city_id>",  methods=["GET"], strict_slashes=False)
