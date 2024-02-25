@@ -53,7 +53,7 @@ def place_by_id(place_id):
     """gets a specific Place object by ID
     Args:
         place_id: place object id"""
-    if storage.get("Place", str(place_id)):
+    if not storage.get("Place", str(place_id)):
         abort(404)
     objs = storage.get("Place", str(place_id))
     return jsonify(objs.to_dict())
