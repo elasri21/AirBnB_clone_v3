@@ -29,7 +29,7 @@ def place_create(city_id):
         abort(400, 'Not a JSON')
     if not storage.get("User", json_pls["user_id"]):
         abort(404)
-    if not storage.get("City", str(city_id)):
+    if not storage.get("City", city_id):
         abort(404)
     if "user_id" not in json_pls:
         abort(400, 'Missing user_id')
