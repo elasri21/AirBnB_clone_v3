@@ -11,10 +11,10 @@ def amenity_by_place(place_id):
     """get all amenities of a place
     Args:
         place_id: amenity id"""
+    if not storage.get("Place", str(place_id)):
+        abort(404)
     objs = storage.get("Place", str(place_id))
     list_of_amenities = []
-    if objs is None:
-        abort(404)
     for obj in objs.amenities:
         list_of_amenities.append(obj.to_dict())
     return jsonify(list_of_amenities)
@@ -46,7 +46,7 @@ def unlink_amenity_from_place(place_id, amenity_id):
         abort(404)
     else:
         response = jsonify({})
-        response.status_code = 201
+        response.status_code = 200
         return response
 
 
