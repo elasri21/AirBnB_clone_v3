@@ -89,4 +89,4 @@ def place_delete_by_id(place_id):
     objs = storage.get("Place", str(place_id))
     storage.delete(objs)
     storage.save()
-    return jsonify({})
+    return jsonify({}), 200
