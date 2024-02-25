@@ -75,7 +75,7 @@ def place_put(place_id):
         if key not in ["id", "created_at", "updated_at", "user_id", "city_id"]:
             setattr(objs, key, val)
     objs.save()
-    return jsonify(objs.to_dict())
+    return jsonify(objs.to_dict()), 200
 
 
 @app_views.route("/places/<place_id>",  methods=["DELETE"],
