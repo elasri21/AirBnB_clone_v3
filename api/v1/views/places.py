@@ -53,9 +53,9 @@ def place_by_id(place_id):
     """gets a specific Place object by ID
     Args:
         place_id: place object id"""
-    objs = storage.get("Place", str(place_id))
-    if objs is None:
+    if storage.get("Place", str(place_id)):
         abort(404)
+    objs = storage.get("Place", str(place_id))
     return jsonify(objs.to_dict())
 
 
@@ -68,9 +68,9 @@ def place_put(place_id):
     json_pls = request.get_json(silent=True)
     if json_pls is None:
         abort(400, 'Not a JSON')
-    objs = storage.get("Place", str(place_id))
-    if objs is None:
+    if not storage.get("Place", str(place_id)):
         abort(404)
+    objs = storage.get("Place", str(place_id))
     for key, val in json_pls.items():
         if key not in ["id", "created_at", "updated_at", "user_id", "city_id"]:
             setattr(objs, key, val)
@@ -84,9 +84,9 @@ def place_delete_by_id(place_id):
     """deletes Place by id
     Args:
         place_id: Place object id"""
-    objs = storage.get("Place", str(place_id))
-    if objs is None:
+    if not storage.get("Place", str(place_id)):
         abort(404)
+    objs = storage.get("Place", str(place_id))
     storage.delete(objs)
     storage.save()
     return jsonify({})
