@@ -14,6 +14,8 @@ def places_by_city(city_id):
     Args:
         city_id: city id"""
     list_of_places = []
+    if not storage.get("City", str(city_id)):
+        abort(404)
     objs = storage.get("City", str(city_id))
     for obj in objs.places:
         list_of_places.append(obj.to_dict())
