@@ -90,3 +90,54 @@ def place_delete_by_id(place_id):
     storage.delete(objs)
     storage.save()
     return jsonify({}), 200
+
+
+@app_views.route("/places_search",  methods=["POST"],
+                 strict_slashes=False)
+def places_search():
+    """search for places"""
+    data = request.get_json()
+    if data is None:
+        abort(400, description="Not a JSON")
+    if data and len(data):
+        states = data.get('states', None)
+        cities = data.get('cities', None)
+        amenities = data.get('amenities', None)
+    if not data or not len(data) or (
+            not states and
+            not cities and
+            not amenities):
+        places = storage.all(Place).values()
+        list_of_places = []
+        for place in places:
+            list_of_places.append(place.to_dict())
+        return jsonify(list_of_places)
+    list_pls = []
+    if states:
+        st_objs = [stoeage.get(State, s_id) for s_id in states]
+        for state in st_objs:
+            if state:
+                for city in state.cities:
+                    if city:
+                        for place in city.places:
+                            list_pls.append(place)
+    if cities:
+        obj_cts = [storage.get(City, c_id) for c_id in cities]
+        for ct in cities:
+            if ct:
+                for place in ct.places:
+                    if place not in list_pls:
+                        list_pls.append(place)
+    if amenities:
+        if not list_pls:
+            list_pls = storage.all(Place).values()
+        objs_ams = [storage.get(Amenity, am_id) for am_id in amenities]
+        list_pls = [place for place in list_pls
+                    if all([am in place.amenities
+                           for am in objs_ams])]
+    places = []
+    for pl in list_pls:
+        dct = pl.to_dict()
+        dct.pop('amenities', None)
+        places.append(dct)
+    return jsonify(places)
