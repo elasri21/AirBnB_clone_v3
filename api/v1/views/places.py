@@ -96,7 +96,7 @@ def place_delete_by_id(place_id):
                  strict_slashes=False)
 def places_search():
     """search for places"""
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if data is None:
         abort(400, description="Not a JSON")
     if data and len(data):
@@ -123,7 +123,7 @@ def places_search():
                             list_pls.append(place)
     if cities:
         obj_cts = [storage.get(City, c_id) for c_id in cities]
-        for ct in cities:
+        for ct in obj_cts:
             if ct:
                 for place in ct.places:
                     if place not in list_pls:
