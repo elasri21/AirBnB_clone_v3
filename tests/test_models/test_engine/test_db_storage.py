@@ -88,7 +88,7 @@ class TestFileStorage(unittest.TestCase):
         """Test that save properly saves objects to file.json"""
 
 
-@unittest.skipIf(storage_type != 'db', 'skip if environ is not db')
+@unittest.skipIf(storage_t != 'db', 'skip if environ is not db')
 class TestStorageGet(unittest.TestCase):
     """
     Testing `get()` method in DBStorage
@@ -139,7 +139,7 @@ class TestStorageGet(unittest.TestCase):
         self.assertIsNone(result)
 
 
-@unittest.skipIf(storage_type != 'db', 'skip if environ is not db')
+@unittest.skipIf(storage_t != 'db', 'skip if environ is not db')
 class TestStorageCount(unittest.TestCase):
     """
     tests count() method in DBStorage
