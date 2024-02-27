@@ -115,7 +115,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(json.loads(string), json.loads(js))
 
 
-@unittest.skipIf(storage_type == 'db', 'skip if environ is not db')
+@unittest.skipIf(storage_t == 'db', 'skip if environ is not db')
 class TestStorageGet(unittest.TestCase):
     """
     Testing `get()` method in DBStorage
@@ -168,7 +168,7 @@ class TestStorageGet(unittest.TestCase):
         self.assertIsNone(result)
 
 
-@unittest.skipIf(storage_type == 'db', 'skip if environ is not db')
+@unittest.skipIf(storage_t == 'db', 'skip if environ is not db')
 class TestStorageCount(unittest.TestCase):
     """
     tests count() method in DBStorage
